@@ -1,0 +1,31 @@
+# Este manifiesto define un objeto Deployment, que asegura
+# que siempre haya una o más réplicas de un contenedor corriendo.
+
+apiVersion: apps/v1              # Versión de la API para el tipo "Deployment"
+kind: Deployment                 # Tipo de recurso: un Deployment controla el ciclo de vida de los pods
+metadata:
+  name: movie-shop               # Nombre del Deployment (usado para identificarlo en el clúster)
+  labels:
+    app: movie-shop              # Etiqueta personalizada (usada para asociar este Deployment a otros objetos, como Services)
+spec:
+  replicas: 2                    # Número deseado de pods (contenedores en ejecución). Se puede escalar dinámicamente
+  selector:
+    matchLabels:
+      app: movie-shop            # El selector busca pods con esta etiqueta. Debe coincidir con la sección "template.metadata.labels"
+  template:                      # Plantilla de pod: define cómo debe ser cada pod
+    metadata:
+      labels:
+        app: movie-shop          # Etiqueta aplicada a los pods creados por este Deployment
+    spec:
+      containers:
+        - name: movie-shop       # Nombre del contenedor dentro del pod
+          image: acrk8sschoolof.azurecr.io/movie-shop-api:v1  # Imagen Docker version V1 que se usará (ubicada en Azure Container Registry)
+          ports:
+            - containerPort: 8000  # Puerto expuesto dentro del contenedor (por la aplicación)
+          resources:              # Reglas para asignación de recursos
+            requests:             # Recursos mínimos que el contenedor necesita para arrancar
+              cpu: "100m"         # 100 millicores de CPU (~10% de un CPU)
+              memory: "128Mi"     # 128 megabytes de RAM
+            limits:               # Límite máximo de recursos que puede usar el contenedor
+              cpu: "250m"         # 250 millicores de CPU
+              memory: "256Mi"     # 256 megabytes de RAM

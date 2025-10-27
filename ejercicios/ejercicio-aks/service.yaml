@@ -1,0 +1,14 @@
+# Este manifiesto define un Service que expone la aplicación al exterior
+# usando una IP pública (cortesía del proveedor de nube, en este caso Azure)
+
+apiVersion: v1
+kind: Service                           # Tipo de recurso: Service (exposición de red)
+metadata:
+  name: movie-shop-service              # Nombre del servicio (usado internamente)
+spec:
+  type: LoadBalancer                    # Tipo LoadBalancer crea una IP pública accesible desde Internet
+  selector:
+    app: movie-shop                     # Selecciona los pods que tengan esta etiqueta (coincide con el Deployment)
+  ports:
+    - port: 80                          # Puerto en el que se expone el servicio (externo)
+      targetPort: 8000                  # Puerto en el que la app escucha dentro del contenedor
